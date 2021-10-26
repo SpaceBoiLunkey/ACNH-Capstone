@@ -4,8 +4,8 @@ namespace ACNHWorldMVC.Repositories
 {
     public interface IUserProfileRepository
     {
-        void Add(UserProfile userProfile);
-        UserProfile GetByFirebaseUserId(string firebaseUserId);
-        UserProfile GetById(int id);
+        void Add(User userProfile);
+        User GetByFirebaseUserId(string firebaseUserId);
+        User GetById(int id);
     }
 }

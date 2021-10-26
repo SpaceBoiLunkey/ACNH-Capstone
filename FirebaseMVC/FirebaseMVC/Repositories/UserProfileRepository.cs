@@ -26,7 +26,7 @@ namespace ACNHWorldMVC.Repositories
             }
         }
 
-        public UserProfile GetById(int id)
+        public User GetById(int id)
         {
             using (SqlConnection conn = Connection)
             {
@@ -34,22 +34,23 @@ namespace ACNHWorldMVC.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                                    SELECT Id, Email, FirebaseUserId
-                                    FROM UserProfile
+                                    SELECT Id, [Name], Email, FirebaseId
+                                    FROM [User]
                                     WHERE Id = @Id";
 
                     cmd.Parameters.AddWithValue("@id", id);
 
-                    UserProfile userProfile = null;
+                    User userProfile = null;
 
                     var reader = cmd.ExecuteReader();
                     if (reader.Read())
                     {
-                        userProfile = new UserProfile
+                        userProfile = new User
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Name = reader.GetString(reader.GetOrdinal("Name")),
                             Email = reader.GetString(reader.GetOrdinal("Email")),
-                            FirebaseUserId = reader.GetString(reader.GetOrdinal("FirebaseUserId")),
+                            FirebaseId = reader.GetString(reader.GetOrdinal("FirebaseId")),
                         };
                     }
                     reader.Close();
@@ -59,7 +60,7 @@ namespace ACNHWorldMVC.Repositories
             }
         }
 
-        public UserProfile GetByFirebaseUserId(string firebaseUserId)
+        public User GetByFirebaseUserId(string firebaseUserId)
         {
             using (SqlConnection conn = Connection)
             {
@@ -67,22 +68,23 @@ namespace ACNHWorldMVC.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                                    SELECT Id, Email, FirebaseUserId
-                                    FROM UserProfile
-                                    WHERE FirebaseUserId = @FirebaseuserId";
+                                    SELECT Id, [Name], Email, FirebaseId
+                                    FROM [User]
+                                    WHERE FirebaseId = @FirebaseId";
 
                     cmd.Parameters.AddWithValue("@FirebaseUserId", firebaseUserId);
 
-                    UserProfile userProfile = null;
+                    User userProfile = null;
 
                     var reader = cmd.ExecuteReader();
                     if (reader.Read())
                     {
-                        userProfile = new UserProfile
+                        userProfile = new User
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Name = reader.GetString(reader.GetOrdinal("Name")),
                             Email = reader.GetString(reader.GetOrdinal("Email")),
-                            FirebaseUserId = reader.GetString(reader.GetOrdinal("FirebaseUserId")),
+                            FirebaseId = reader.GetString(reader.GetOrdinal("FirebaseUserId")),
                         };
                     }
                     reader.Close();
@@ -92,7 +94,7 @@ namespace ACNHWorldMVC.Repositories
             }
         }
 
-        public void Add(UserProfile userProfile)
+        public void Add(User userProfile)
         {
             using (SqlConnection conn = Connection)
             {
@@ -101,12 +103,13 @@ namespace ACNHWorldMVC.Repositories
                 {
                     cmd.CommandText = @"
                                         INSERT INTO
-                                        UserProfile (Email, FirebaseUserId) 
+                                        User ([Name], Email, FirebaseId) 
                                         OUTPUT INSERTED.ID
-                                        VALUES(@email, @firebaseUserId)";
+                                        VALUES(@email, @firebaseId)";
 
+                    cmd.Parameters.AddWithValue("@name", userProfile.Name);
                     cmd.Parameters.AddWithValue("@email", userProfile.Email);
-                    cmd.Parameters.AddWithValue("@firebaseUserId", userProfile.FirebaseUserId);
+                    cmd.Parameters.AddWithValue("@firebaseId", userProfile.FirebaseId);
 
                     userProfile.Id = (int)cmd.ExecuteScalar();
                 }

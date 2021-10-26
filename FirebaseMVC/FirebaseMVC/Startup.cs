@@ -25,10 +25,14 @@ namespace ACNHWorldMVC
             services.AddHttpClient();
             services.AddTransient<IFirebaseAuthService, FirebaseAuthService>();
             services.AddTransient<IUserProfileRepository, UserProfileRepository>();
+            services.AddTransient<IVillagerRepository, VillagerRepository>();
+            services.AddTransient<IMessageRepository, MessageRepository>();
+
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => options.Cookie.SameSite = SameSiteMode.Strict);
+            services.AddTransient<IFossilRepository, FossilRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

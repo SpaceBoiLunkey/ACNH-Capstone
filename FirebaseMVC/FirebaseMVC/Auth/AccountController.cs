@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using ACNHWorldMVC.Auth.Models;
-using ACNHWorldMVC.Repositories;
-using ACNHWorldMVC.Models;
 using Microsoft.Extensions.Configuration;
+using ACNHWorldMVC.Repositories;
+using ACNHWorldMVC.Auth.Models;
+using ACNHWorldMVC.Models;
 
 namespace ACNHWorldMVC.Auth
 {
@@ -75,10 +75,11 @@ namespace ACNHWorldMVC.Auth
                 return View(registration);
             }
 
-            var newUserProfile = new UserProfile
+            var newUserProfile = new User
             {
+                Name = registration.Name,
                 Email = fbUser.Email,
-                FirebaseUserId = fbUser.FirebaseUserId,
+                FirebaseId = fbUser.FirebaseUserId,
             };
             _userProfileRepository.Add(newUserProfile);
 
@@ -93,7 +94,7 @@ namespace ACNHWorldMVC.Auth
             return RedirectToAction("Index", "Home");
         }
 
-        private async Task LoginToApp(UserProfile userProfile)
+        private async Task LoginToApp(User userProfile)
         {
             var claims = new List<Claim>
             {
