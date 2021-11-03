@@ -24,40 +24,44 @@ namespace ACNHWorldMVC.Controllers
 
         public IActionResult Index()
         {
-            var messages = _messageRepository.GetAllPublishedMessages();
+            List<Message> messages = _messageRepository.GetAllPublishedMessages();
+
             return View(messages);
         }
 
         public IActionResult Details(int id)
         {
-            var message = _messageRepository.GetPublishedMessageById(id);
+            Message message = _messageRepository.GetPublishedMessageById(id);
+
             if (message == null)
             {
-                int userId = GetCurrentUserId();
-                message = _messageRepository.GetUserMessageById(id, userId);
-                if (message == null)
-                {
-                    return NotFound();
-                }
+                return NotFound();
             }
+
             return View(message);
         }
 
         public IActionResult Create()
         {
-            var vm = new MessageCreateViewModel();
-            return View(vm);
+            return View();
         }
 
         [HttpPost]
-        public IActionResult Create(MessageCreateViewModel vm)
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(Message message)
         {
-            vm.Message.UserId = GetCurrentUserId();
+            try
+            {
+                _messageRepository.Add(message);
 
-            _messageRepository.Add(vm.Message);
-
-            return RedirectToAction("Details", new { id = vm.Message.Id });
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return View(message);
+            }
         }
+
         public IActionResult Delete(int id)
         {
             Message message = _messageRepository.GetPublishedMessageById(id);
@@ -67,7 +71,7 @@ namespace ACNHWorldMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, Message message)
+        public ActionResult Delete(int id, Message message)
         {
             try
             {
@@ -80,6 +84,7 @@ namespace ACNHWorldMVC.Controllers
                 return View(message);
             }
         }
+
 
         public IActionResult UserMessages()
         {
@@ -94,7 +99,8 @@ namespace ACNHWorldMVC.Controllers
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.Parse(id);
         }
-        public IActionResult Edit(int id)
+
+        public ActionResult Edit(int id)
         {
             Message message = _messageRepository.GetPublishedMessageById(id);
 
@@ -106,13 +112,16 @@ namespace ACNHWorldMVC.Controllers
             return View(message);
         }
 
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Message message)
+        public ActionResult Edit (int id, Message message)
         {
             try
             {
                 _messageRepository.UpdateMessage(message);
+
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -120,5 +129,6 @@ namespace ACNHWorldMVC.Controllers
                 return View(message);
             }
         }
+
     }
 }

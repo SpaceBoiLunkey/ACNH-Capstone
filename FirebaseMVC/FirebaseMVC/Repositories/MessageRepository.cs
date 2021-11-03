@@ -56,9 +56,9 @@ namespace ACNHWorldMVC.Repositories
                     cmd.CommandText = @"
                        SELECT m.Id, m.UserId, m.Subject, m.Text, 
                               u.[Name], u.FirebaseId, 
-                              u.Email,
+                              u.Email
                          FROM Message m
-                              LEFT JOIN User u ON p.UserId = u.id
+                              LEFT JOIN [User] u ON m.UserId = u.id
                         WHERE m.id = @id";
 
                     cmd.Parameters.AddWithValue("@id", id);
@@ -124,7 +124,7 @@ namespace ACNHWorldMVC.Repositories
                             UserId, Subject, Text )
                         OUTPUT INSERTED.ID
                         VALUES (
-                            @UserId, @Subject, @Text )";
+                            @userId, @subject, @text )";
                     cmd.Parameters.AddWithValue("@UserId", message.UserId);
                     cmd.Parameters.AddWithValue("@Subject", message.Subject);
                     cmd.Parameters.AddWithValue("@Text", message.Text);
@@ -144,8 +144,8 @@ namespace ACNHWorldMVC.Repositories
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("UserId")),
                     Name = reader.GetString(reader.GetOrdinal("Name")),
-                    FirebaseId = reader.GetString(reader.GetOrdinal("FirebaseId")),
                     Email = reader.GetString(reader.GetOrdinal("Email")),
+                    FirebaseId = reader.GetString(reader.GetOrdinal("FirebaseId")),
                 },
                 Subject = reader.GetString(reader.GetOrdinal("Subject")),
                 Text = reader.GetString(reader.GetOrdinal("Text")),
@@ -164,7 +164,7 @@ namespace ACNHWorldMVC.Repositories
                             SET  
                                 UserId = @userId, 
                                 Subject = @subject, 
-                                Text = @text,
+                                Text = @text
                             WHERE Id = @id";
 
                     cmd.Parameters.AddWithValue("@userId", message.UserId);

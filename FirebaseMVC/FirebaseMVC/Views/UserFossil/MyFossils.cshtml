@@ -1,0 +1,40 @@
+﻿@model IEnumerable<ACNHWorldMVC.Models.UserFossil>
+
+@{
+    ViewData["Title"] = "MyFossils";
+}
+
+<h1>My Fossils</h1>
+
+<p>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Fossil.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fossil.ImageUrl)
+            </th>
+            <th></th>
+        </tr>
+
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <th>
+                @Html.DisplayFor(modelItem => item.Fossil.Name)
+            </th>
+            <th>
+                <img src="@item.Fossil.ImageUrl" alt="fossil" />
+            </th>
+            <td>
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ACNHWorldMVC.Controllers
@@ -12,12 +13,18 @@ namespace ACNHWorldMVC.Controllers
     public class FossilsController : Controller
     {
         private readonly IFossilRepository _fossilRepo;
+        private readonly IUserProfileRepository _userRepo;
+        private readonly IUserFossilRepository _userFossilRepo;
 
         // ASP.NET will give us an instance of our Walker Repository. This is called "Dependency Injection"
-        public FossilsController(IFossilRepository fossilRepository)
+        public FossilsController(IFossilRepository fossilRepository, IUserProfileRepository userProfileRepository, IUserFossilRepository userFossilRepository)
         {
             _fossilRepo = fossilRepository;
+            _userRepo = userProfileRepository;
+            _userFossilRepo = userFossilRepository;
         }
+
+       
 
         // GET: FossilsController
         public ActionResult Index()
@@ -26,7 +33,6 @@ namespace ACNHWorldMVC.Controllers
 
             return View(fossils);
         }
-
 
         // GET: FossilsController/Details/5
         public ActionResult Details(int id)
@@ -42,19 +48,15 @@ namespace ACNHWorldMVC.Controllers
         }
 
 
-        // GET: FossilsController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
+        
 
-        // POST: FossilsController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        // GET: FossilsController/Create
+        public ActionResult AddFossil(int id)
         {
             try
             {
+                int userId = GetCurrentUserId();
+                _fossilRepo.AddFossilToUser(id, userId);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -103,6 +105,11 @@ namespace ACNHWorldMVC.Controllers
             {
                 return View();
             }
+        }
+        private int GetCurrentUserId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
         }
     }
 }

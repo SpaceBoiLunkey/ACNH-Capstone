@@ -8,6 +8,8 @@ namespace ACNHWorldMVC.Repositories
     {
         List<Fossil> GetAllFossils();
         Fossil GetFossilById(int id);
+        List<Fossil> GetFossilsbyUserId(int userId);
+        void AddFossilToUser(int fossil, int user);
     }
 
 }

@@ -70,7 +70,7 @@ namespace ACNHWorldMVC.Repositories
                     cmd.CommandText = @"
                                     SELECT Id, [Name], Email, FirebaseId
                                     FROM [User]
-                                    WHERE FirebaseId = @FirebaseId";
+                                    WHERE FirebaseId = @FirebaseUserId";
 
                     cmd.Parameters.AddWithValue("@FirebaseUserId", firebaseUserId);
 
@@ -84,7 +84,7 @@ namespace ACNHWorldMVC.Repositories
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Name = reader.GetString(reader.GetOrdinal("Name")),
                             Email = reader.GetString(reader.GetOrdinal("Email")),
-                            FirebaseId = reader.GetString(reader.GetOrdinal("FirebaseUserId")),
+                            FirebaseId = reader.GetString(reader.GetOrdinal("FirebaseId")),
                         };
                     }
                     reader.Close();

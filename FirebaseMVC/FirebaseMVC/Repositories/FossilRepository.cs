@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using ACNHWorldMVC.Controllers;
+using System;
 
 namespace ACNHWorldMVC.Repositories
 {
@@ -34,9 +35,8 @@ namespace ACNHWorldMVC.Repositories
                     cmd.CommandText = @"
                         SELECT f.Id, f.[Name], f.ImageUrl
                         FROM Fossil f
-                        LEFT JOIN UserFossil uf ON uf.FossilId = f.id
-                        LEFT JOIN [User] u ON f.Id = u.id
                     ";
+
                     SqlDataReader reader = cmd.ExecuteReader();
 
                     List<Fossil> fossils = new List<Fossil>();
@@ -67,8 +67,12 @@ namespace ACNHWorldMVC.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT Id, [Name], ImageUrl
-                        FROM Fossil
+                        SELECT f.Id, f.[Name], f.ImageUrl, uf.Id, uf.UserId , uf.FossilId, u.Id, u.[Name], u.FirebaseId, u.Email
+                        FROM Fossil f
+                        LEFT JOIN UserFossils uf
+                        ON f.Id = uf.UserId
+                        LEFT JOIN User u
+                        ON uf.UserId = u.Id
                         WHERE Id = @id
                     ";
 
@@ -96,5 +100,66 @@ namespace ACNHWorldMVC.Repositories
                 }
             }
         }
+        public List<Fossil> GetFossilsbyUserId(int userId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                                        SELECT f.Id as FId, f.[Name], f.ImageUrl
+                                        FROM UserFossil uf
+                                        INNER JOIN Fossil f ON uf.FossilId = f.Id
+                                        WHERE uf.UserId = @userId;";
+
+                    cmd.Parameters.AddWithValue("@userId", userId);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    List<Fossil> fossils = new List<Fossil>();
+
+
+                    while (reader.Read())
+                    {
+
+                        Fossil fossil = new Fossil()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("FId")),
+                            Name = reader.GetString(reader.GetOrdinal("Name")),
+                            ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl"))
+                        };
+                        fossils.Add(fossil);
+                    }
+                    reader.Close();
+                    return fossils;
+                }
+            }
+        }
+
+        public void AddFossilToUser(int fossilId, int userId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                                        INSERT INTO UserFossil (UserId, FossilId)
+                                        OUTPUT INSERTED.ID
+                                        VALUES (@userid, @fossilId)
+                                        ";
+                    cmd.Parameters.AddWithValue("@userid", userId);
+                    cmd.Parameters.AddWithValue("@fossilid", fossilId);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        
+
+        
     }
 }

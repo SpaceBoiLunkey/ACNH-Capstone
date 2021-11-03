@@ -27,6 +27,7 @@ namespace ACNHWorldMVC
             services.AddTransient<IUserProfileRepository, UserProfileRepository>();
             services.AddTransient<IVillagerRepository, VillagerRepository>();
             services.AddTransient<IMessageRepository, MessageRepository>();
+            services.AddTransient<IUserFossilRepository, UserFossilRepository>();
 
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
