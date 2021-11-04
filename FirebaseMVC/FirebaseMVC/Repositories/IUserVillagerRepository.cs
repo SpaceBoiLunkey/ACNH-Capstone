@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace ACNHWorldMVC.Repositories
 {
-    public interface IUserFossilRepository
+    public interface IUserVillagerRepository
     {
-        List<UserFossil> GetAllCurrentUserFossils(int userId);
+        List<UserVillager> GetAllCurrentUserVillagers(int userId);
         public void Delete(int id);
-        public UserFossil GetUserFossilById(int id);
+        UserVillager GetUserVillagerById(int id);
     }
 }

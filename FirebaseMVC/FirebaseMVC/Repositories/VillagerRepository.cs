@@ -34,8 +34,6 @@ namespace ACNHWorldMVC.Repositories
                     cmd.CommandText = @"
                         SELECT v.Id, v.[Name], v.ImageUrl
                         FROM Villager v
-                        LEFT JOIN UserVillager uv ON uv.VillagerId = v.id
-                        LEFT JOIN [User] u ON v.Id = u.id
                     ";
                     SqlDataReader reader = cmd.ExecuteReader();
 
@@ -93,6 +91,63 @@ namespace ACNHWorldMVC.Repositories
                         reader.Close();
                         return null;
                     }
+                }
+            }
+        }
+        public List<Villager> GetVillagersbyUserId(int userId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                                        SELECT v.Id as VId, v.[Name], v.ImageUrl
+                                        FROM UserVillager uv
+                                        INNER JOIN Villager v ON uv.VillagerId = v.Id
+                                        WHERE uf.UserId = @userId;";
+
+                    cmd.Parameters.AddWithValue("@userId", userId);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    List<Villager> villagers = new List<Villager>();
+
+
+                    while (reader.Read())
+                    {
+
+                        Villager villager = new Villager()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("VId")),
+                            Name = reader.GetString(reader.GetOrdinal("Name")),
+                            ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl"))
+                        };
+                        villagers.Add(villager);
+                    }
+                    reader.Close();
+                    return villagers;
+                }
+            }
+        }
+
+        public void AddVillagerToUser(int villagerId, int userId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                                        INSERT INTO UserVillager (UserId, VillagerId)
+                                        OUTPUT INSERTED.ID
+                                        VALUES (@userid, @villagerId)
+                                        ";
+                    cmd.Parameters.AddWithValue("@userid", userId);
+                    cmd.Parameters.AddWithValue("@villagerid", villagerId);
+
+                    cmd.ExecuteNonQuery();
                 }
             }
         }

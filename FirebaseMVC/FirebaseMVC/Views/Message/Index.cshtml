@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<ACNHWorldMVC.Models.Message>
-
+@using ACNHWorldMVC.Controllers;
+@using System.Security.Claims;
 @{
     ViewData["Title"] = "Index";
 }
@@ -7,7 +8,7 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create New Message</a>
 </p>
 <table class="table">
     <thead>
@@ -37,9 +38,14 @@
                 @Html.DisplayFor(modelItem => item.User.Name)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            @if (item.UserId == int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)))
+            {
+
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) <span>|</span>
+                
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id }) <span>|</span>
+            }
+                @Html.ActionLink("Details", "Details", new { id = item.Id })
             </td>
         </tr>
 }

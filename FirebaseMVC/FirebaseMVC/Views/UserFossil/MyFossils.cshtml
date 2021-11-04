@@ -22,19 +22,20 @@
 
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <th>
-                @Html.DisplayFor(modelItem => item.Fossil.Name)
-            </th>
-            <th>
-                <img src="@item.Fossil.ImageUrl" alt="fossil" />
-            </th>
-            <td>
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>
+                    @Html.DisplayFor(modelItem => item.Fossil.Name)
+                </th>
+                <th>
+                    <img src="@item.Fossil.ImageUrl" alt="fossil" />
+                </th>
+                <td>
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }) 
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

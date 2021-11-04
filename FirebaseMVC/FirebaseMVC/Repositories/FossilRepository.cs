@@ -67,13 +67,9 @@ namespace ACNHWorldMVC.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT f.Id, f.[Name], f.ImageUrl, uf.Id, uf.UserId , uf.FossilId, u.Id, u.[Name], u.FirebaseId, u.Email
+                        SELECT f.Id, f.[Name], f.ImageUrl
                         FROM Fossil f
-                        LEFT JOIN UserFossils uf
-                        ON f.Id = uf.UserId
-                        LEFT JOIN User u
-                        ON uf.UserId = u.Id
-                        WHERE Id = @id
+                        WHERE f.Id = @id
                     ";
 
                     cmd.Parameters.AddWithValue("@id", id);

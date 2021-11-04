@@ -2,49 +2,46 @@
 using ACNHWorldMVC.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ACNHWorldMVC.Controllers
 {
-    public class UserFossilController : Controller
+    public class UserVillagerController : Controller
     {
-        private readonly IUserFossilRepository _userFossilRepo;
+        private readonly IUserVillagerRepository _userVillagerRepo;
 
         // ASP.NET will give us an instance of our Walker Repository. This is called "Dependency Injection"
-        public UserFossilController(IFossilRepository fossilRepository, IUserProfileRepository userProfileRepository, IUserFossilRepository userFossilRepository)
+        public UserVillagerController(IVillagerRepository fossilRepository, IUserProfileRepository userProfileRepository, IUserVillagerRepository userVillagerRepository)
         {
-            _userFossilRepo = userFossilRepository;
+            _userVillagerRepo = userVillagerRepository;
         }
 
-        public IActionResult MyFossils()
+        public IActionResult MyVillagers()
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            List<UserFossil> userFossils = _userFossilRepo.GetAllCurrentUserFossils(userId);
+            List<UserVillager> userVillagers = _userVillagerRepo.GetAllCurrentUserVillagers(userId);
 
-            return View(userFossils);
+            return View(userVillagers);
         }
-        //GetUserFossilById
         public ActionResult Delete(int id)
         {
-            UserFossil userFossil = _userFossilRepo.GetUserFossilById(id);
+            UserVillager userVillager = _userVillagerRepo.GetUserVillagerById(id);
 
-            return View(userFossil);
+            return View(userVillager);
         }
 
-        // POST: FossilsController/Delete/5 (Delete)
+        // POST: VillagerController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {
             try
             {
-                _userFossilRepo.Delete(id);
-                return RedirectToAction(nameof(MyFossils));
+                _userVillagerRepo.Delete(id);
+                return RedirectToAction(nameof(MyVillagers));
             }
             catch
             {

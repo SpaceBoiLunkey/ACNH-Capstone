@@ -52,8 +52,9 @@ namespace ACNHWorldMVC.Controllers
         {
             try
             {
+                int userId = GetCurrentUserId();
+                message.UserId = userId;
                 _messageRepository.Add(message);
-
                 return RedirectToAction("Index");
             }
             catch (Exception ex)

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ACNHWorldMVC.Controllers
@@ -41,6 +42,20 @@ namespace ACNHWorldMVC.Controllers
             return View(villager);
         }
 
+
+        public ActionResult AddVillager(int id)
+        {
+            try
+            {
+                int userId = GetCurrentUserId();
+                _villagerRepo.AddVillagerToUser(id, userId);
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
 
         // GET: VillagerController/Create
         public ActionResult Create()
@@ -103,6 +118,11 @@ namespace ACNHWorldMVC.Controllers
             {
                 return View();
             }
+        }
+        private int GetCurrentUserId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
         }
     }
 }

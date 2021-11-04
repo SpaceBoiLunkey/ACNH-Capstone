@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace ACNHWorldMVC.Repositories
 {
-    public class UserFossilRepository : BaseRepository, IUserFossilRepository
+    public class UserVillagerRepository : IUserVillagerRepository
     {
         private readonly IConfiguration _config;
 
         // The constructor accepts an IConfiguration object as a parameter. This class comes from the ASP.NET framework and is useful for retrieving things out of the appsettings.json file like connection strings.
-        public UserFossilRepository(IConfiguration config) : base(config)
+        public UserVillagerRepository(IConfiguration config)
         {
             _config = config;
         }
@@ -25,16 +25,16 @@ namespace ACNHWorldMVC.Repositories
                 return new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             }
         }
-        private UserFossil NewFossilFromReader(SqlDataReader reader)
+        private UserVillager NewVillagerFromReader(SqlDataReader reader)
         {
-            return new UserFossil()
+            return new UserVillager()
             {
                 Id = reader.GetInt32(reader.GetOrdinal("Id")),
                 UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
-                FossilId = reader.GetInt32(reader.GetOrdinal("FossilId")),
+                VillagerId = reader.GetInt32(reader.GetOrdinal("VillagerId")),
             };
         }
-        public List<UserFossil> GetAllCurrentUserFossils(int userId)
+        public List<UserVillager> GetAllCurrentUserVillagers(int userId)
         {
             using (var conn = Connection)
             {
@@ -42,44 +42,45 @@ namespace ACNHWorldMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                      SELECT uf.id, uf.UserId, uf.FossilId, u.id, u.FirebaseId, u.Email, f.id, f.[Name], f.ImageUrl
-                                        FROM UserFossil AS uf
-                                        LEFT JOIN Fossil AS f ON uf.FossilId = f.id
-                                        LEFT JOIN [User] AS u ON uf.UserId = u.id
-                       WHERE uf.UserId = @userId";
+                      SELECT uv.id, uv.UserId, uv.VillagerId, u.id, u.FirebaseId, u.Email, v.id, v.[Name], v.ImageUrl
+                                        FROM UserVillager AS uv
+                                        LEFT JOIN Villager AS v ON uv.VillagerId = v.id
+                                        LEFT JOIN [User] AS u ON uv.UserId = u.id
+                       WHERE uv.UserId = @userId";
 
                     cmd.Parameters.AddWithValue("@userId", userId);
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
-                    List<UserFossil> userFossils = new List<UserFossil>();
+                    List<UserVillager> userVillagers = new List<UserVillager>();
 
                     while (reader.Read())
                     {
-                        UserFossil userFossil = new UserFossil
+                        UserVillager userVillager = new UserVillager
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
-                            FossilId = reader.GetInt32(reader.GetOrdinal("FossilId")),
-                            Fossil = new Fossil()
+                            VillagerId = reader.GetInt32(reader.GetOrdinal("VillagerId")),
+                            Villager = new Villager()
                             {
                                 Id = reader.GetInt32(reader.GetOrdinal("Id")),
                                 Name = reader.GetString(reader.GetOrdinal("Name")),
                                 ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
                             },
                         };
-                        userFossils.Add(userFossil);
+                        userVillagers.Add(userVillager);
 
                     }
-                        reader.Close();
-                        return userFossils;
-                    
-                    
+                    reader.Close();
+                    return userVillagers;
+
+
 
                 }
             }
         }
-        public UserFossil GetUserFossilById(int id)
+
+        public UserVillager GetUserVillagerById(int id)
         {
             using (SqlConnection conn = Connection)
             {
@@ -88,38 +89,39 @@ namespace ACNHWorldMVC.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                                        SELECT f.Name, f.ImageUrl, uf.UserId, uf.Id, uf.FossilId 
-                                        FROM UserFossil uf
-                                        INNER JOIN Fossil f ON uf.FossilId = f.Id
-                                        WHERE uf.FossilId = @id;";
+                                        SELECT v.[Name], v.ImageUrl, uv.UserId, uv.Id, uv.VillagerId 
+                                        FROM UserVillager uv
+                                        INNER JOIN Villager v ON uv.VillagerId = v.Id
+                                        WHERE uv.VillagerId = @id;";
 
                     cmd.Parameters.AddWithValue("@id", id);
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
-                    UserFossil userFossil = null;
+                    UserVillager userVillager = null;
 
                     if (reader.Read())
                     {
 
-                        userFossil = new UserFossil()
+                        userVillager = new UserVillager()
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
-                            FossilId = reader.GetInt32(reader.GetOrdinal("FossilId")),
-                            Fossil = new Fossil
+                            VillagerId = reader.GetInt32(reader.GetOrdinal("VillagerId")),
+                            Villager = new Villager
                             {
-                                Id = reader.GetInt32(reader.GetOrdinal("FossilId")),
+                                Id = reader.GetInt32(reader.GetOrdinal("VillagerId")),
                                 Name = reader.GetString(reader.GetOrdinal("Name")),
                                 ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl"))
                             }
                         };
                     }
                     reader.Close();
-                    return userFossil;
+                    return userVillager;
                 }
             }
         }
+
         public void Delete(int id)
         {
             using (var conn = Connection)
@@ -129,7 +131,7 @@ namespace ACNHWorldMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                            DELETE FROM UserFossil
+                            DELETE FROM UserVillager
                             WHERE Id = @id
                         ";
 

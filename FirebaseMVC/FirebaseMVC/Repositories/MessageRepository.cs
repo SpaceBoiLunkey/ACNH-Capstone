@@ -125,6 +125,7 @@ namespace ACNHWorldMVC.Repositories
                         OUTPUT INSERTED.ID
                         VALUES (
                             @userId, @subject, @text )";
+
                     cmd.Parameters.AddWithValue("@UserId", message.UserId);
                     cmd.Parameters.AddWithValue("@Subject", message.Subject);
                     cmd.Parameters.AddWithValue("@Text", message.Text);

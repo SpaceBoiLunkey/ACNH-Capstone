@@ -103,9 +103,9 @@ namespace ACNHWorldMVC.Repositories
                 {
                     cmd.CommandText = @"
                                         INSERT INTO
-                                        User ([Name], Email, FirebaseId) 
+                                        [User] ([Name], Email, FirebaseId) 
                                         OUTPUT INSERTED.ID
-                                        VALUES(@email, @firebaseId)";
+                                        VALUES(@name, @email, @firebaseId)";
 
                     cmd.Parameters.AddWithValue("@name", userProfile.Name);
                     cmd.Parameters.AddWithValue("@email", userProfile.Email);

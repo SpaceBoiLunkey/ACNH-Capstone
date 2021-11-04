@@ -8,6 +8,9 @@ namespace ACNHWorldMVC.Repositories
     {
         List<Villager> GetAllVillagers();
         Villager GetVillagerById(int id);
+        List<Villager> GetVillagersbyUserId(int userId);
+        void AddVillagerToUser(int villagerId, int userId);
+
     }
 
 }
