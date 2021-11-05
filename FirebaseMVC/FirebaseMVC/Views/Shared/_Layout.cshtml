@@ -1,17 +1,23 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="~/CssIsolationMvc.styles.css" />
+    <meta charset="utf-8" />
+
+    <title>@ViewBag.Title - My ASP.NET MVC Application</title>
+
+    <meta name="viewport" content="width=device-width" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - FirebaseMVC</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/bootstrap-mint.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FirebaseMVC</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ACNH World</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -43,6 +49,9 @@
                        </li>
                        <li class="nav-item">
                            <a class="nav-link text-dark" asp-area="" asp-controller="Villager" asp-action="Index">Villagers</a>
+                       </li>
+                       <li class="nav-item">
+                           <a class="nav-link text-dark" asp-area="" asp-controller="Message" asp-action="Index">Message Board</a>
                        </li>
                        <li class="nav-item">
                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
